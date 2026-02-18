@@ -36,6 +36,7 @@ def append_to_bigquery(data, table_id, dataset_id='home_ynab', project_id='ecsta
 
     job_config = bigquery.LoadJobConfig(
         write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
+        create_disposition=bigquery.CreateDisposition.CREATE_IF_NEEDED,
         autodetect=True
     )
 
@@ -68,6 +69,7 @@ def write_to_bigquery(data, table_id, dataset_id='home_ynab', project_id='ecstat
 
     job_config = bigquery.LoadJobConfig(
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
+        create_disposition=bigquery.CreateDisposition.CREATE_IF_NEEDED,
         autodetect=True,
     )
 
