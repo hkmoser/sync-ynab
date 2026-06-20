@@ -90,6 +90,7 @@ def reconstruct_history(accounts, transactions, target_dates, today):
                 "balance": balance,
                 "cleared_balance": cleared,
                 "uncleared_balance": round(balance - cleared, 2),
+                "source": "backfill",
             })
     return rows
 
@@ -146,7 +147,8 @@ def main():
     rows = reconstruct_history(accounts, transactions, target_dates, today)
 
     write_history_csv_bulk(rows, target_dates)
-    lib_bq.append_snapshots(rows, HISTORY_BQ_TABLE_NAME, snapshot_dates=target_dates)
+    lib_bq.append_snapshots(rows, HISTORY_BQ_TABLE_NAME, snapshot_dates=target_dates,
+                            schema=lib_bq.BALANCES_HISTORY_SCHEMA)
     print(f"Backfilled {len(rows)} rows "
           f"({len(accounts)} accounts x {len(target_dates)} days).")
 
