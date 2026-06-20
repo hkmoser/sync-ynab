@@ -1,18 +1,7 @@
-import requests
-import pandas as pd
-import datetime
-import json
-from google.cloud import bigquery
-
-path="/Users/joemoser/Dropbox/Source/afm/ynab/"
-counter_file=path+'ctr_last.txt'
-
-print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-
-client = bigquery.Client(project='ecstatic-pod-443723-f6')
-import pandas as pd
-from google.cloud import bigquery
 import time
+
+import pandas as pd
+from google.cloud import bigquery
 
 def append_to_bigquery(data, table_id, dataset_id='home_ynab', project_id='ecstatic-pod-443723-f6'):
     """
