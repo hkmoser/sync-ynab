@@ -46,8 +46,8 @@ def write_bigquery(rows):
     lib_bq.write_to_bigquery(df, BQ_TABLE_NAME)
 
 def build_history_rows(rows, snapshot_date):
-    """Prefix each balance row with the snapshot date for the history dataset."""
-    return [{"snapshot_date": snapshot_date, **row} for row in rows]
+    """Tag each balance row with the snapshot date and mark it as a real capture."""
+    return [{"snapshot_date": snapshot_date, **row, "source": "actual"} for row in rows]
 
 def write_history_csv(history_rows, snapshot_date):
     """Append today's snapshot to the local history CSV, replacing any rows
@@ -63,7 +63,8 @@ def write_history_csv(history_rows, snapshot_date):
 
 def write_history_bigquery(history_rows, snapshot_date):
     df = pd.DataFrame(history_rows)
-    lib_bq.append_daily_snapshot(df, HISTORY_BQ_TABLE_NAME, snapshot_date)
+    lib_bq.append_daily_snapshot(df, HISTORY_BQ_TABLE_NAME, snapshot_date,
+                                 schema=lib_bq.BALANCES_HISTORY_SCHEMA)
 
 def main():
     rows = fetch_account_balances()
