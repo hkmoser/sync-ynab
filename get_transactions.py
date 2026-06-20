@@ -75,14 +75,19 @@ def write_bigquery(transactions, accounts, categories):
     print("Writing transactions to BigQuery...")
     df_transactions = pd.DataFrame(transactions)
     lib_bq.write_to_bigquery(df_transactions, TRANSACTIONS_TABLE_NAME)
-    
-    print("Writing accounts to BigQuery...")
-    df_accounts = pd.DataFrame(accounts)
-    lib_bq.write_to_bigquery(df_accounts, ACCOUNTS_TABLE_NAME)
-    
+
     print("Writing categories to BigQuery...")
     df_categories = pd.DataFrame(categories)
     lib_bq.write_to_bigquery(df_categories, CATEGORIES_TABLE_NAME)
+
+    print("Writing accounts to BigQuery...")
+    df_accounts = pd.DataFrame(accounts)
+    # Drop debt columns that are empty structs and break Parquet/BigQuery load
+    debt_cols = ["debt_interest_rates", "debt_minimum_payments", "debt_escrow_amounts"]
+    for col in debt_cols:
+        if col in df_accounts.columns:
+            df_accounts = df_accounts.drop(columns=[col])
+    lib_bq.write_to_bigquery(df_accounts, ACCOUNTS_TABLE_NAME)
 
 
 def main():
